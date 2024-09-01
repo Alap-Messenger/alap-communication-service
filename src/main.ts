@@ -37,10 +37,10 @@ async function bootstrap() {
 			port: config.redisPort,
 		},
 	});
+	await app.startAllMicroservices();
 	app.enableCors({
 		origin: '*',
 	});
-	await app.startAllMicroservices();
 	app.useGlobalPipes(new ValidationPipe({ transform: true }));
 	app.useGlobalFilters(new AllExceptionsFilter());
 	app.useGlobalPipes(new ValidationPipe());

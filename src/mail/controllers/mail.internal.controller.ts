@@ -3,13 +3,11 @@ import { MessagePattern } from '@nestjs/microservices';
 import { MailService } from '../services/mail.service';
 
 @Controller()
-export class InternalNotificationController {
+export class InternalMailController {
 	constructor(private readonly mailService: MailService) {}
 
-	@MessagePattern({ cmd: 'COMMUNICATION_CUSTOMER_GET_NOTIFICATIONS' })
-	async getNotifications(data: any) {
-		console.log({ data });
-		console.log('successfully calling microservices from auth to communication service');
+	@MessagePattern({ cmd: 'COMMUNICATION_SEND_USER_VERIFICATION_MAIL' })
+	async sendTestMail(data: any) {
 		return await this.mailService.sendTestMail(data);
 	}
 }
