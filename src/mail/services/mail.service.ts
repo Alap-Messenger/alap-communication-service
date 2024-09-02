@@ -8,9 +8,9 @@ export class MailService {
 	async sendMail(data?: any) {
 		try {
 			await this.mailerService.sendMail({
-				to: 'faruk@zaynaxhealth.com', // list of receivers
+				to: 'faruk@zaynaxhealth.com',
 				cc: 'zaynax.mukut@gmail.com',
-				subject: 'zDrop Wholesell request', // Subject line// plaintext body
+				subject: 'zDrop Wholesell request',
 				html: `
                 <h1>
                 ${data.rfqNo}
@@ -32,11 +32,16 @@ export class MailService {
 
 	async sendTestMail(data: any) {
 		try {
-			await this.mailerService.sendMail({
+			const response = await this.mailerService.sendMail({
 				to: `${data?.email}`,
-				subject: 'Test mail. Checking microservice is working or not',
-				html: `<h1>Hi, ${data?.userName}</h1>`,
+				subject: 'Activate your account.',
+				html: `<h3>Hi, ${data?.userName}</h3>
+				<p>Please verify your user account by clicking the link below:</p>
+                   <a href="http://localhost:3000/auth/account-verification?email=${data?.email}&token=${data?.verificationToken}&accounttype=${data?.accountType}">Verify Account</a>
+                   <p>This link is valid for 24 hours.</p>
+				`,
 			});
+			return response;
 		} catch (error) {
 			console.log(error);
 		}

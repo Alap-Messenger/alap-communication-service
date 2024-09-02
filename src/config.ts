@@ -34,6 +34,10 @@ export interface IConfig {
 	redisURL: string;
 	redisHost: string;
 	redisPort: number;
+	smtpFrom: string;
+	smtpHost: string;
+	smtpUser: string;
+	smtpPass: string;
 }
 
 const config = (): IConfig => {
@@ -41,6 +45,7 @@ const config = (): IConfig => {
 	const redisConfig = getRedisConfig();
 	const { mongodbUsername, mongodbPassword, mongodbHost, dbName } = mongoConfig;
 	const { redisHost, redisPort } = redisConfig;
+	const { SMTP_FROM: smtpFrom, SMTP_HOST: smtpHost, SMTP_USER: smtpUser, SMTP_PASS: smtpPass } = process.env;
 	const mongoURL = `mongodb+srv://${mongodbUsername}:${mongodbPassword}@${mongodbHost}/${dbName}`;
 	const redisURL = `redis://${redisHost}:${redisPort}`;
 
@@ -53,6 +58,10 @@ const config = (): IConfig => {
 		redisURL,
 		redisHost,
 		redisPort: parseInt(redisPort, 10),
+		smtpFrom,
+		smtpHost,
+		smtpUser,
+		smtpPass,
 	};
 };
 

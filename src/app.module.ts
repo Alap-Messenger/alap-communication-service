@@ -13,14 +13,14 @@ import { MicroServiceClientModule } from './modules/microservice-client/microser
 		MicroServiceClientModule.register(config.redisURL, config.redisPort),
 		MailerModule.forRoot({
 			transport: {
-				host: 'smtp.gmail.com',
+				host: config.smtpHost,
 				auth: {
-					user: 'info.alapmessenger@gmail.com',
-					pass: 'foqb qnmq arlm ocsw',
+					user: config.smtpUser,
+					pass: config.smtpPass,
 				},
 			},
 			defaults: {
-				from: 'Alap <noreply@info.alapmessenger@gmail.com>',
+				from: `Alap <noreply@${config.smtpFrom}>`,
 			},
 			template: {
 				dir: path.join(__dirname, './mail/templates'),
