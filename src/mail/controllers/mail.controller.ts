@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { MailService } from '../services/mail.service';
 
-@ApiTags('Email Center')
+@ApiTags('Email Related Operations')
 @Controller('email')
 export class MailController {
 	constructor(private readonly mailService: MailService) {}
