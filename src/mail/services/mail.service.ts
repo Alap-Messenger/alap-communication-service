@@ -1,49 +1,39 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as ejs from 'ejs';
 
 @Injectable()
 export class MailService {
-	constructor(private mailerService: MailerService) {}
+  constructor(@Inject() private mailerService: MailerService) {}
 
-	async sendMail(data?: any) {
-		try {
-			await this.mailerService.sendMail({
-				to: 'faruk@zaynaxhealth.com',
-				cc: 'zaynax.mukut@gmail.com',
-				subject: 'zDrop Wholesell request',
-				html: `
-                <h1>
-                ${data.rfqNo}
-            </h1>
-        
-            <p>Name:${data.name}</p>
-            <p>Mobile Number: ${data.phoneNo}</p>
-            <p>Email: ${data.email}</p>
-            <p>Company Name: ${data.companyName}</p>
-            <p>Message: ${data.message}</p>
-            <p>Attachment: <a href=${data.uploadedFile}>Open Attachment</a></p>   
+  async sendEmail(
+    to: string,
+    subject: string,
+    content: string,
+    context?: Record<string, any>,
+  ): Promise<void> {
+    try {
+      let emailContent: string;
 
-                `, // HTML body content
-			});
-		} catch (error) {
-			console.log(error);
-		}
-	}
+      if (content.endsWith('.ejs')) {
+        const templatePath = path.resolve(__dirname, content);
+        const template = fs.readFileSync(templatePath, 'utf8');
+        emailContent = ejs.render(template, context);
+      } else {
+        emailContent = content;
+      }
 
-	async sendTestMail(data: any) {
-		try {
-			const response = await this.mailerService.sendMail({
-				to: `${data?.email}`,
-				subject: 'Activate your account.',
-				html: `<h3>Hi, ${data?.userName}</h3>
-				<p>Please verify your user account by clicking the link below:</p>
-                   <a href="http://localhost:3000/auth/account-verification?email=${data?.email}&token=${data?.verificationToken}&accounttype=${data?.accountType}">Verify Account</a>
-                   <p>This link is valid for 24 hours.</p>
-				`,
-			});
-			return response;
-		} catch (error) {
-			console.log(error);
-		}
-	}
+      const mailOptions: any = {
+        to,
+        subject,
+        html: emailContent,
+      };
+
+      await this.mailerService.sendMail(mailOptions);
+    } catch (error) {
+      throw new Error(`Failed to send email: ${error.message}`);
+    }
+  }
 }
